@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@types/backbone": "^1.4.15",
+    "backbone": "^1.4.0"
+  }
+}
