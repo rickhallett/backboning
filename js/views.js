@@ -72,8 +72,7 @@ var DeleteButtonView = Backbone.View.extend({
     },
 
     onClickButton: function (e) {
-        e.stopPropagation();
-        // this.model.remove();
+        this.model.trigger('custom');
     },
 
     render: function () {
@@ -84,6 +83,12 @@ var DeleteButtonView = Backbone.View.extend({
 
 var TodoListView = Backbone.View.extend({
     el: '#todo-list',
+
+    initialize: function () {
+        this.model.on('custom', () => {
+            console.log('custom event');
+        });
+    },
 
     render: function () {
         this.model.each((todo, i) => {
