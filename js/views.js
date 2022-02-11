@@ -1,11 +1,13 @@
 var TodoModel = Backbone.Model.extend({
     idAttribute: 'todoId',
     urlRoot: null,
-
     text: 'text',
     completed: 'completed',
+});
 
-    validate: function () {},
+var TodoModelCollection = Backbone.Collection.extend({
+    model: TodoModel,
+    url: null,
 });
 
 var TodoItemView = Backbone.View.extend({
@@ -21,26 +23,12 @@ var TodoItemView = Backbone.View.extend({
 var TodoListView = Backbone.View.extend({
     el: '#todo-list',
 
-    initialize: function (attrs) {
-        console.log(attrs);
-        this.todos;
-    },
-
     render: function () {
-        this.$el.html(
-            this.model.map(
-                (todo, i) =>
-                    new TodoItemView({ id: i, model: todo }).render().$el
-            )
-        );
-
-        return this;
+        this.model.each((todo, i) => {
+            var todoView = new TodoItemView({ id: i, model: todo });
+            this.$el.append(todoView.render().$el);
+        });
     },
-});
-
-var TodoModelCollection = Backbone.Collection.extend({
-    model: TodoModel,
-    url: null,
 });
 
 var todos = new TodoModelCollection([
