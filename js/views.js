@@ -11,11 +11,67 @@ var TodoModelCollection = Backbone.Collection.extend({
 });
 
 var TodoItemView = Backbone.View.extend({
-    id: 'id',
     tagName: 'li',
 
     render: function () {
-        this.$el.text(this.model.attributes.text);
+        this.$el.text(this.model.get('text'));
+        this.$el.append([
+            new CheckButtonView({
+                id: this.model.get('todoId'),
+                model: this.model,
+            }).render().$el,
+            new DeleteButtonView({
+                id: this.model.get('todoId'),
+                model: this.model,
+            }).render().$el,
+        ]);
+        return this;
+    },
+});
+
+var CheckButtonView = Backbone.View.extend({
+    tagName: 'button',
+
+    events: {
+        click: 'onClickButton',
+    },
+
+    attributes: {
+        class: 'outline',
+        role: 'button',
+    },
+
+    onClickButton: function (e) {
+        e.stopPropagation();
+        console.log('check button todo id:', this.model.get('todoId'));
+        this.model.set({ completed: !this.model.get('completed') });
+    },
+
+    render: function () {
+        this.$el.text('C');
+        return this;
+    },
+});
+
+var DeleteButtonView = Backbone.View.extend({
+    tagName: 'button',
+
+    events: {
+        click: 'onClickButton',
+    },
+
+    attributes: {
+        class: 'outline',
+        role: 'button',
+    },
+
+    onClickButton: function (e) {
+        e.stopPropagation();
+        console.log('delete button todo id:', this.model.get('todoId'));
+    },
+
+    render: function () {
+        this.$el.text('X');
         return this;
     },
 });
@@ -26,7 +82,7 @@ var TodoListView = Backbone.View.extend({
     render: function () {
         this.model.each((todo, i) => {
             var todoView = new TodoItemView({ id: i, model: todo });
-            this.$el.append(todoView.render().$el);
+            this.$el.append([todoView.render().$el]);
         });
     },
 });
@@ -45,9 +101,5 @@ var todos = new TodoModelCollection([
     }),
 ]);
 
-console.log('todos', todos);
-console.log('todos json', todos.toJSON());
-
 var todoListView = new TodoListView({ model: todos });
-console.log(todoListView);
 todoListView.render();
