@@ -1,33 +1,65 @@
-var Todo = Backbone.View.extend({
-    id: 'id',
-    text: 'text',
+var TodoModel = Backbone.Model.extend({
+    idAttribute: 'todoId',
+    urlRoot: null,
 
+    text: 'text',
+    completed: 'completed',
+
+    validate: function () {},
+});
+
+var TodoItemView = Backbone.View.extend({
+    id: 'id',
     tagName: 'li',
 
-    initialise: function (attrs) {},
+    render: function () {
+        this.$el.text(this.model.attributes.text);
+        return this;
+    },
+});
+
+var TodoListView = Backbone.View.extend({
+    el: '#todo-list',
+
+    initialize: function (attrs) {
+        console.log(attrs);
+        this.todos;
+    },
 
     render: function () {
-        this.$el.html('Hello world');
+        this.$el.html(
+            this.model.map(
+                (todo, i) =>
+                    new TodoItemView({ id: i, model: todo }).render().$el
+            )
+        );
 
         return this;
     },
 });
 
-var TodoList = Backbone.View.extend({
-    el: '.container',
-
-    render: function () {
-        console.log(this);
-        this.$el.html('<ul id="todolist"></ul>');
-
-        return this;
-    },
+var TodoModelCollection = Backbone.Collection.extend({
+    model: TodoModel,
+    url: null,
 });
 
-var todolist = new TodoList();
-todolist.render();
+var todos = new TodoModelCollection([
+    new TodoModel({
+        todoId: 0,
+        text: 'Understand backbone.js fundamentals',
+        completed: false,
+    }),
+    new TodoModel({ todoId: 1, text: 'Complete challenges', completed: false }),
+    new TodoModel({
+        todoId: 2,
+        text: 'Complete the master app',
+        completed: false,
+    }),
+]);
 
-var t = new Todo({ id: 0, text: 'Hello, world!' }).render();
-console.log(t);
+console.log('todos', todos);
+console.log('todos json', todos.toJSON());
 
-$('#todolist').html(t.$el);
+var todoListView = new TodoListView({ model: todos });
+console.log(todoListView);
+todoListView.render();
