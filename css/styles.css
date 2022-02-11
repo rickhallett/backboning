@@ -14,3 +14,7 @@ button,
     padding: 0px;
     margin-left: 1rem;
 }
+
+.strike {
+    text-decoration: line-through;
+}

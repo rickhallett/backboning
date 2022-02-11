@@ -13,8 +13,15 @@ var TodoModelCollection = Backbone.Collection.extend({
 var TodoItemView = Backbone.View.extend({
     tagName: 'li',
 
+    initialize: function () {
+        this.model.on('change', this.render, this);
+    },
+
     render: function () {
         this.$el.text(this.model.get('text'));
+        this.$el.attr('class', () =>
+            this.model.get('completed') ? 'strike' : null
+        );
         this.$el.append([
             new CheckButtonView({
                 id: this.model.get('todoId'),
@@ -43,7 +50,6 @@ var CheckButtonView = Backbone.View.extend({
 
     onClickButton: function (e) {
         e.stopPropagation();
-        console.log('check button todo id:', this.model.get('todoId'));
         this.model.set({ completed: !this.model.get('completed') });
     },
 
@@ -67,7 +73,7 @@ var DeleteButtonView = Backbone.View.extend({
 
     onClickButton: function (e) {
         e.stopPropagation();
-        console.log('delete button todo id:', this.model.get('todoId'));
+        // this.model.remove();
     },
 
     render: function () {
