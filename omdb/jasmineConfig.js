@@ -22,4 +22,9 @@ requirejs.config({
     },
 });
 
-requirejs(['src/app']);
+require(['jasmine-boot0', 'jasmine-boot1'], function () {
+    require(['spec/app.spec'], function () {
+        //trigger Jasmine
+        window.onload();
+    });
+});
